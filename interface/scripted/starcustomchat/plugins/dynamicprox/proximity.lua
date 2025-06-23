@@ -854,8 +854,6 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
             local splitArgs
             if xsb then
                 splitArgs = chat.parseArguments(splitArgs)
-            elseif chat.parseArguments then -- FezzedOne: OpenStarbound and StarExtensions.
-                splitArgs = table.pack(chat.parseArguments(splitArgs))
             else
                 splitArgs = splitStr(data, " ")
             end
@@ -917,8 +915,6 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
             local splitArgs
             if xsb then
                 splitArgs = chat.parseArguments(splitArgs)
-            elseif chat.parseArguments then -- FezzedOne: OpenStarbound and StarExtensions.
-                splitArgs = table.pack(chat.parseArguments(splitArgs))
             else
                 splitArgs = splitStr(data, " ")
             end
@@ -967,8 +963,6 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
             local splitArgs
             if xsb then
                 splitArgs = chat.parseArguments(splitArgs)
-            elseif chat.parseArguments then -- FezzedOne: OpenStarbound and StarExtensions.
-                splitArgs = table.pack(chat.parseArguments(splitArgs))
             else
                 splitArgs = splitStr(data, " ")
             end
@@ -1130,7 +1124,13 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
     end)
     starcustomchat.utils.setMessageHandler("/grouprecog", function(_, _, data)
         local status, resultOrError = pcall(function(data)
-            local group = splitStr(data, " ")[1] or nil
+            local splitArgs
+            if xsb then
+                splitArgs = chat.parseArguments(splitArgs)
+            else
+                splitArgs = splitStr(data, " ")
+            end
+            local group = splitArgs[1] or nil
             local curGroup = player.getProperty("DPC::recogGroup") or "none"
 
             if not group or #group < 1 then
@@ -1275,7 +1275,12 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
     starcustomchat.utils.setMessageHandler("/addalias", function(_, _, data)
         local status, resultOrError = pcall(function(data)
             --the different splitting caused problems with negative numbers, reverted
-            local splitArgs = splitStr(data, " ")
+            local splitArgs
+            if xsb then
+                splitArgs = chat.parseArguments(splitArgs)
+            else
+                splitArgs = splitStr(data, " ")
+            end
             local alias, aliasPrio = splitArgs[1] or nil, splitArgs[2] or nil
             if (not alias or #tostring(alias) < 1) or not aliasPrio then
                 return "Missing arguments, you must include an alias and priority."
