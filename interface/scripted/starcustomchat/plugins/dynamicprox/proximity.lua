@@ -362,7 +362,7 @@ function dynamicprox:addCustomCommandPreview(availableCommands, substr)
             description = "commands.ignoreversion.desc",
             data = "/ignoreversion",
         })
-    elseif xsb and string.find("/nametag", substr, nil, true) then
+    elseif xsb and string.find("/setname", substr, nil, true) then
         table.insert(availableCommands, {
             name = "/setname",
             description = "commands.setname.desc",
