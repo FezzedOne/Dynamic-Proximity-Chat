@@ -1367,9 +1367,12 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
     --add /apply with the ability to use the chid or everyone within LOS and 30 tiles
     starcustomchat.utils.setMessageHandler("/apply", function(_, _, data)
         local status, resultOrError = pcall(function(data)
-            local aliasPrio = splitStr(data, " ")[1] or "0"
+            -- FezzedOne: Backported bugfix for the alias type check from Captain Salt's repo.
+            local aliasPrio = tostring(math.tointeger(splitStr(data, " ")[1]) or "0")
             local chid = root.getConfiguration("DPC::cursorChar") or nil
-            if not chid then return "No character selected, move your cursor over one and use /chid to select them." end
+            if not chid then
+                return "No character selected, move your cursor over one and use /chid to make the selection."
+            end
             local playerAliases = player.getProperty("DPC::aliases") or {}
             local aliasInfo = {}
 
