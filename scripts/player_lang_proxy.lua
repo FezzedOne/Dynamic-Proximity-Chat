@@ -22,9 +22,7 @@ function init()
         if isLocal then return player.setProperty("DynProxChat::commCodes", newCommCodes or { ["0"] = false }) end
     end)
     message.setHandler("dpcServerMessage", function(_, _, status)
-        if status then
-            chat.addMessage(status)
-        end
+        if status then chat.addMessage(status) end
     end)
     message.setHandler("dpcLearnLangReturn", function(_, _, data)
         if data then
@@ -36,7 +34,7 @@ function init()
             local learnedLangs = player.getProperty("DPC::learnedLangs") or {}
             learnedLangs[langKey] = {
                 name = langName,
-                prof = langLevel
+                prof = langLevel,
             }
             player.setProperty("DPC::learnedLangs", learnedLangs)
 
@@ -77,7 +75,7 @@ function init()
             playerRecog = {
                 ["savedName"] = aliasInfo.alias,
                 ["manName"] = false,
-                ["aliasPrio"] = aliasInfo.priority
+                ["aliasPrio"] = aliasInfo.priority,
             }
             recoged[playerUid] = playerRecog
             player.setProperty("DPC::recognizedPlayers", recoged)
@@ -92,31 +90,23 @@ function init()
     end)
 
     message.setHandler("dpcGetRecogs", function(_, isLocal)
-        if isLocal then
-            return player.getProperty("DPC::recognizedPlayers") or {}
-        end
+        if isLocal then return player.getProperty("DPC::recognizedPlayers") or {} end
     end)
 
     message.setHandler("dpcSetRecogs", function(_, isLocal, newRecogs)
-        if isLocal then
-            player.setProperty("DPC::recognizedPlayers", newRecogs)
-        end
+        if isLocal then player.setProperty("DPC::recognizedPlayers", newRecogs) end
     end)
 
     local currentName, defaultName = getNames()
-    if not defaultName then
-        status.setStatusProperty("defaultName", player.name())
-    end
+    if not defaultName then status.setStatusProperty("defaultName", player.name()) end
 
     if xsb then
-         -- FezzedOne: Hides the name tag (or sets a custom one) on *all* clients seeing the player, not just oSB clients.
-         -- With DPC installed on xSB, use `/setname` instead of `/identity set name` for changing the character's name.
+        -- FezzedOne: Hides the name tag (or sets a custom one) on *all* clients seeing the player, not just oSB clients.
+        -- With DPC installed on xSB, use `/setname` instead of `/identity set name` for changing the character's name.
         player.setName(currentName or "")
     elseif player.setName then -- FezzedOne: On OpenStarbound and StarExtensions, undoes xStarbound's name tag change.
         local defaultName = status.statusProperty("defaultName")
-        if type(defaultName) == "string" then
-            player.setName(defaultName)
-        end
+        if type(defaultName) == "string" then player.setName(defaultName) end
         status.setStatusProperty("defaultName", nil)
     end
 end
@@ -126,6 +116,9 @@ function uninit()
         -- FezzedOne: If your player has no name in the character selection screen due to a sudden disconnection or similar,
         -- just load the player once and unload it or return to the main to ensure this code runs and the player gets its name back.
         local _, defaultName = getNames()
-        if defaultName then player.setName(defaultName or "") end
+        if defaultName then
+            player.setName(defaultName or "")
+            status.setStatusProperty("defaultName", nil)
+        end
     end
 end

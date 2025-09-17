@@ -452,12 +452,12 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
     starcustomchat.utils.setMessageHandler("/proxdebug", function(_, _, data)
         if string.lower(data) == "on" then
             DEBUG = true
-            return "^green;ENABLED^reset; debug mode for Dynamic Proximity Chat"
+            return "^green;ENABLED^reset; debug mode for xDPC"
         elseif string.lower(data) == "off" then
             DEBUG = false
-            return "^red;DISABLED^reset; debug mode for Dynamic Proximity Chat"
+            return "^red;DISABLED^reset; debug mode for xDPC"
         else
-            return "Debug mode for Dynamic Proximity Chat is "
+            return "Debug mode for xDPC is "
                 .. (DEBUG and "^green;ENABLED" or "^red;DISABLED")
                 .. "^reset;. To change this setting, pass ^orange;on^reset; or ^orange;off^reset; to this command."
         end
@@ -465,13 +465,13 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
     starcustomchat.utils.setMessageHandler("/dynamicsccrp", function(_, _, data)
         if string.lower(data) == "on" then
             root.setConfiguration("DynamicProxChat::handleSccrpProx", true)
-            return "^green;ENABLED^reset; handling SCCRP Proximity messages as dynamic proximity chat"
+            return "^green;ENABLED^reset; handling SCCRP Proximity messages as xDPC chat"
         elseif string.lower(data) == "off" then
             root.setConfiguration("DynamicProxChat::handleSccrpProx", false)
-            return "^red;DISABLED^reset; handling SCCRP Proximity messages as dynamic proximity chat"
+            return "^red;DISABLED^reset; handling SCCRP Proximity messages as xDPC chat"
         else
             local enabled = root.getConfiguration("DynamicProxChat::handleSccrpProx") or false
-            return "Handling SCCRP Proximity messages as dynamic proximity chat is "
+            return "Handling SCCRP Proximity messages as xDPC chat is "
                 .. (enabled and "^green;ENABLED" or "^red;DISABLED")
                 .. "^reset;. To change this setting, pass ^orange;on^reset; or ^orange;off^reset; to this command."
         end
@@ -1395,7 +1395,7 @@ function dynamicprox:registerMessageHandlers(shared) --look at this function in 
 
             -- FezzedOne: Use this instead!
             world.sendEntityMessage(chid.entityId, "showRecog", aliasInfo)
-            return "The selected character should now recognise you (if running DPC)."
+            return "The selected character should now recognise you (if running xDPC)."
         end, data)
         if status then
             return resultOrError
@@ -1902,7 +1902,7 @@ function dynamicprox:onSendMessage(data)
                     return errorMsg
                 else
                     sb.logWarn(
-                        "[DynamicProxChat] Error occurred while sending proximity message: %s\n  Message data: %s",
+                        "[xDPC] Error occurred while sending proximity message: %s\n  Message data: %s",
                         errorMsg,
                         data
                     )
@@ -3214,7 +3214,7 @@ function dynamicprox:formatIncomingMessage(rawMessage)
                 end
 
                 message.isDpc = true
-                -- FezzedOne: If both SCCRP and Dynamic Proximity Chat are installed, always show SCCRP Proximity messages as such, even if handled by DPC.
+                -- FezzedOne: If both SCCRP and xDPC are installed, always show SCCRP Proximity messages as such, even if handled by xDPC.
                 if message.isSccrp then message.mode = "Proximity" end
                 -- FezzedOne: Show Local and Broadcast messages as such, even if formatted by DPC.
                 if showAsLocal then message.mode = "Local" end
@@ -3372,7 +3372,7 @@ function dynamicprox:formatIncomingMessage(rawMessage)
         return messageOrError
     else
         sb.logWarn(
-            "[DynamicProxChat] Error occurred while formatting proximity message: %s\n  Message data: %s",
+            "[xDPC] Error occurred while formatting proximity message: %s\n  Message data: %s",
             messageOrError,
             messageData
         )
@@ -3390,7 +3390,7 @@ end
 function dynamicprox:onModeChange(mode)
     if mode == "Prox" and not (player.getProperty("DPC::firstLoad") or false) then
         chat.addMessage(
-            '^CornFlowerBlue;Dynamic Prox Chat^reset;: Before getting started with this mod, first check to see if you\'re using it with a server or as an individual client, then use "^cyan;/dpcserver^reset; ^green;on^reset;/^red;off^reset;" to enable or disable server handling for message processing. To use the language system, use ^cyan;/learnlang^reset; or ^cyan;/newlangitem^reset; to manage languages for chat. This notice will only appear once, but its information can be found on the mod page.'
+            '^CornFlowerBlue;xDPC^reset;: Before getting started with this mod, first check to see if you\'re using it with a server or as an individual client, then use "^cyan;/dpcserver^reset; ^green;on^reset;/^red;off^reset;" to enable or disable server handling for message processing. To use the language system, use ^cyan;/learnlang^reset; or ^cyan;/newlangitem^reset; to manage languages for chat. This notice will only appear once, but its information can be found on the GitHub repo.'
         )
         if self.serverDefault then root.setConfiguration("dpcOverServer", true) end
         player.setProperty("DPC::firstLoad", true)
@@ -3402,7 +3402,7 @@ function dynamicprox:onModeChange(mode)
     then
         sb.logInfo("Setting dpcOverServer to true")
         chat.addMessage(
-            '^CornFlowerBlue;Dynamic Prox Chat^reset;: You have a mod installed that has ^green;enabled^reset; server handling for messages. If you want to keep server handling disabled, use "^cyan;/dpcserver off forced^reset;" to force the mod to ignore this configuration.'
+            '^CornFlowerBlue;xDPC^reset;: You have a mod installed that has ^green;enabled^reset; server handling for messages. If you want to keep server handling disabled, use "^cyan;/dpcserver off forced^reset;" to force the mod to ignore this configuration.'
         )
         root.setConfiguration("dpcOverServer", true)
         -- root.setConfiguration("scc_autohide_ignore_server_messages",true)
