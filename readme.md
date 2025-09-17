@@ -36,7 +36,7 @@ Additionally, xDPC is compatible with [StarCustomChatRP](https://github.com/Kras
 
 - Actions - `He does this.`: Default state, writing a full message without any quotes or indicators will post an action. Actions require line of sight to be received.
 - Quotes - `"Hello."`: Use `""` to open and close quotes. They have a shorter range than actions, but do not need direct line of sight so long as there is open air between the sender and receiver.
-- Sounds - `<bang>: Use `<>` to open and close sounds. They are identical to quotes in function, but are intended for noises made by things, rather than people. If used within a quote, the text inside is not language-scrambled; use this for names.
+- Sounds - `<bang>`: Use `<>` to open and close sounds. They are identical to quotes in function, but are intended for noises made by things, rather than people. If used within a quote, the text inside is not language-scrambled; use this for names.
 - Volume Control - `:+`/`:-`/`:=` : Use `:+` (with up to four `+`s) to increase the volume of a quote/sound. Use `:-` (with up to four `-`s) to decrease it. Use `:=` to reset it. You can make noises louder/quieter four times in each direction (`:++++`, `:----`)
 - Global OOC - `(((Hello.)))`: Use `(())` for global OOC. Global OOC is seen by all players on the server, regardless of whether they have xDPC enabled.
 - Local OOC - `((Hello.))`: Use `(())` for local OOC. Local OOC is seen by all players on the same world (or "bridged" worlds, depending on server configuration) if `/proxooc` _and_ `/sendlocal` are both enabled; otherwise its range is limited to 200 tiles.
