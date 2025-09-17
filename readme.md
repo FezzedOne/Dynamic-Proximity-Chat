@@ -65,6 +65,10 @@ You can have multiple default languages, the mod will find the first one in your
 
 - _Note:_ Language items show up in the crafting components section of your inventory, since they're components to craft dialogue, or something like that.
 
+Commcodes in this mod are also specified in brackets (e.g., `[10]` or `[172.2]`); disambiguation is done by checking whether the brackets surround a number (can be an integer or a number with decimal dust, used as a commcode) or anything else (assumed to be a language code).
+
+Comm aliases are also specified in brackets (e.g., `[Alias]`) and (on xStarbound) may contain spaces. If a comm alias and a language code share the same name, the comm alias takes precedence, so make sure to avoid using language codes as comm aliases.
+
 ## Recognition system
 
 This mod has a character name recognition system for xDPC messages. For the most part, the system is transparent and will mark a character's name as recognised to other players within earshot who can see the character's name unscrambled. Unrecognised characters have their names show up as `???` to characters who don't recognise them.
