@@ -1,0 +1,27 @@
+{
+  "name": "xDPC Chat",
+
+  "modes": [
+    {
+      "name": "xDPC::Prox",
+      "has_tab": true,
+      "priority": 15,
+      "has_toggle": true
+    }
+  ],
+
+  "baseConfigValues": {
+    "modeColors": {
+      "xDPC::Prox": "CornFlowerBlue"
+    }
+  },
+
+  "parameters": {
+    "proxRadius": 200,
+    "proxActionRadius": 200,
+    "proxOocRadius": 200,
+    "proxTalkRadius": 30
+  },
+
+  "script": "/interface/scripted/starcustomchat/plugins/xDPC/xDPC.lua"
+}
