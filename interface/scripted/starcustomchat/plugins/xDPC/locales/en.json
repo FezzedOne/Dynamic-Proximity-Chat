@@ -1,6 +1,6 @@
 {
-  "chat.modes.Prox": "xDPC",
-  "chat.modes.ProxSecondary": "xDPC (Secondaries)",
+  "chat.modes.xDPC::Prox": "xDPC",
+  "chat.modes.xDPC::ProxSecondary": "xDPC (Secondaries)",
   "settings.plugins.dynamicprox": "xDPC",
   "commands.newlangitem.desc": "Adds a new language item. {name, code, count, automatic, [hex color]}",
   "commands.addtypo.desc": "Adds a typo to your list. {typo, correction}",
@@ -17,10 +17,6 @@
   "commands.commcodes.desc": "Displays all comm codes your character is listening on.",
   "commands.addcommcode.desc": "Adds or modifies a comm code (or alias) your character is listening on. {comm code, [alias]}",
   "commands.removecommcode.desc": "Removes a comm code your character is listening on. {comm code or alias}",
-  "commands.dpcserver.desc": "Dictates whether or not dynamic messages are sent via a server, default is off. {true, false}",
-  "commands.learnlang.desc": "Commit unspent language points to a language, {code, points, [name], [hex color], [preset]}",
-  "commands.resetlangs.desc": "Resets your language allocations, requires 1st argument to be 'reset'",
-  "commands.defaultlang.desc": "Assign a language to automatically apply in chat {lang code}",
   "commands.togglehints.desc": "Toggle text hints shown in the input bar",
   "commands.chatbubble.desc": "Toggles whether or not a chat bubble appears with a message",
   "commands.skiprecog.desc": "Toggles whether or not your character's name automatically appears for others",
@@ -29,7 +25,6 @@
   "commands.showlangs.desc": "Lists your learned languages",
   "commands.langlist.desc": "Lists a server's registered languages",
   "commands.editlang.desc": "Edit a saved language you created, (code, subject, new value)",
-  "commands.font.desc": "Allows you to change your selected fonts for general messages, and quotes/sounds. {type, font}",
   "commands.chid.desc": "Selects the character your cursor is on for other commands",
   "commands.addnick.desc": "Set a nickname for the character selected with /chid, {nickname}",
   "commands.clearnick.desc": "Remove the nickname (and recognition) for the character selected with /chid",
@@ -38,6 +33,5 @@
   "commands.showalias.desc": "Prints all of your saved aliases and priorities",
   "commands.apply.desc": "Lets the character selected with /chid recognize you, {alias priority}",
   "commands.nametag.desc": "Sets or (if no name is specified) clears your name tag. {[name tag]}",
-  "commands.setname.desc": "Sets your character's name; use instead of /identity set name on xStarbound. {new name}",
-  "commands.ignoreversion.desc": "Ignores version warnings for the session"
+  "commands.setname.desc": "Sets your character's name; use instead of /identity set name on xStarbound. {new name}"
 }

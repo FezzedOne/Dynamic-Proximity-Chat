@@ -21,26 +21,6 @@ function init()
     message.setHandler("setCommCodes", function(_, isLocal, newCommCodes)
         if isLocal then return player.setProperty("xDPC::commCodes", newCommCodes or { ["0"] = false }) end
     end)
-    message.setHandler("dpcServerMessage", function(_, _, status)
-        if status then chat.addMessage(status) end
-    end)
-    message.setHandler("dpcLearnLangReturn", function(_, _, data)
-        if data then
-            local langKey = data.langKey
-            local langName = data.langName
-            local langLevel = data.langLevel
-            local message = data.message
-
-            local learnedLangs = player.getProperty("xDPC::learnedLangs") or {}
-            learnedLangs[langKey] = {
-                name = langName,
-                prof = langLevel,
-            }
-            player.setProperty("DPC::learnedLangs", learnedLangs)
-
-            chat.addMessage(message)
-        end
-    end)
     message.setHandler("getDefaultCommCode", function(_, isLocal, newDefault)
         if isLocal then
             local default = player.getProperty("xDPC::defaultCommCode")
@@ -89,11 +69,11 @@ function init()
         end
     end)
 
-    message.setHandler("dpcGetRecogs", function(_, isLocal)
+    message.setHandler("xdpcGetRecogs", function(_, isLocal)
         if isLocal then return player.getProperty("xDPC::recognizedPlayers") or {} end
     end)
 
-    message.setHandler("dpcSetRecogs", function(_, isLocal, newRecogs)
+    message.setHandler("xdpcSetRecogs", function(_, isLocal, newRecogs)
         if isLocal then player.setProperty("xDPC::recognizedPlayers", newRecogs) end
     end)
 

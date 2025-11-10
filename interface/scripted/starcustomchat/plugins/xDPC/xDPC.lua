@@ -134,7 +134,6 @@ function xDPC:init()
     -- FezzedOne: Check to ensure this callback EXISTS first, Captain Salt!
     if player.setNametag then player.setNametag(currentName or "") end
     root.setConfiguration("xDPC::cursorChar", nil)
-    root.setConfiguration("xDPC::ignoreVersion", nil)
 
     self.unchecked = true
 end
@@ -151,42 +150,6 @@ function xDPC:addCustomCommandPreview(availableCommands, substr)
             description = "commands.newlangitem.desc",
             data = "/newlangitem",
             color = nil,
-        })
-    elseif string.find("/learnlang", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/learnlang",
-            description = "commands.learnlang.desc",
-            data = "/learnlang",
-        })
-    elseif string.find("/showlangs", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/showlangs",
-            description = "commands.showlangs.desc",
-            data = "/showlangs",
-        })
-    elseif string.find("/langlist", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/langlist",
-            description = "commands.langlist.desc",
-            data = "/langlist",
-        })
-    elseif string.find("/editlang", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/editlang",
-            description = "commands.editlang.desc",
-            data = "/editlang",
-        })
-    elseif string.find("/resetlangs", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/resetlangs",
-            description = "commands.resetlangs.desc",
-            data = "/resetlangs",
-        })
-    elseif string.find("/defaultlang", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/defaultlang",
-            description = "commands.defaultlang.desc",
-            data = "/defaultlang",
         })
     elseif string.find("/addtypo", substr, nil, true) then
         table.insert(availableCommands, {
@@ -272,12 +235,6 @@ function xDPC:addCustomCommandPreview(availableCommands, substr)
             description = "commands.removecommcode.desc",
             data = "/removecommcode",
         })
-    elseif string.find("/dpcserver", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/dpcserver",
-            description = "commands.dpcserver.desc",
-            data = "/dpcserver",
-        })
     elseif string.find("/chatbubble", substr, nil, true) then
         table.insert(availableCommands, {
             name = "/chatbubble",
@@ -301,12 +258,6 @@ function xDPC:addCustomCommandPreview(availableCommands, substr)
             name = "/grouprecog",
             description = "commands.grouprecog.desc",
             data = "/grouprecog",
-        })
-    elseif string.find("/font", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/font",
-            description = "commands.font.desc",
-            data = "/font",
         })
     elseif string.find("/chid", substr, nil, true) then
         table.insert(availableCommands, {
@@ -355,12 +306,6 @@ function xDPC:addCustomCommandPreview(availableCommands, substr)
             name = "/nametag",
             description = "commands.nametag.desc",
             data = "/nametag",
-        })
-    elseif string.find("/ignoreversion", substr, nil, true) then
-        table.insert(availableCommands, {
-            name = "/ignoreversion",
-            description = "commands.ignoreversion.desc",
-            data = "/ignoreversion",
         })
     elseif xsb and string.find("/setname", substr, nil, true) then
         table.insert(availableCommands, {
@@ -891,46 +836,6 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             return "^red;Error occurred while running command, check log"
         end
     end)
-    starcustomchat.utils.setMessageHandler("/font", function(_, _, data)
-        local status, resultOrError = pcall(function(data)
-            --no font support yet
-            -- if true then
-            --     return "Fonts aren't supported (yet), wait until [next version]"
-            -- end
-            --1st arg is type, 2nd arg is font
-            local splitArgs = splitStr(data, " ")
-            local type, font = splitArgs[1] or nil, splitArgs[2] or nil
-
-            if type ~= "general" and type ~= "quote" then
-                return 'Incorrect type supplied, use "general" or "quote".'
-            end
-
-            if font == "reset" or font == "exo" then
-                --apply player property to tell people what font is used for general/quotes
-                player.setProperty("xDPC::" .. type .. "Font", nil)
-                player.setProperty("xDPC::" .. type .. "Weight", nil)
-                return "Reset " .. type .. " font."
-            end
-
-            -- sb.logInfo("font is %s, lib entry is %s", font, self.fontLib[font])
-
-            if self.fontLib and self.fontLib[font] then
-                --apply player property to tell people what font is used for general/quotes
-                player.setProperty("xDPC::" .. type .. "Font", self.fontLib[font]["font"])
-                if self.fontLib[font]["weight"] then
-                    player.setProperty("xDPC::" .. type .. "Weight", self.fontLib[font]["weight"])
-                end
-                return "Set " .. type .. " font to: ^font=" .. self.fontLib[font]["font"] .. ";" .. font .. "^reset;"
-            end
-            return 'Font "' .. font .. '" not found.'
-        end, data)
-        if status then
-            return resultOrError
-        else
-            sb.logError("Error occurred while running DPC command: %s", resultOrError)
-            return "^red;Error occurred while running command, check log"
-        end
-    end)
     starcustomchat.utils.setMessageHandler("/chid", function(_, _, data)
         local status, resultOrError = pcall(function(data)
             -- do a playerQuery at the aim position , then use world.entityUniqueId
@@ -962,7 +867,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             if not newNick or #tostring(newNick) < 1 then return "No nickname provided, try again." end
 
             local chid = root.getConfiguration("xDPC::cursorChar") or nil
-            if not chid then return "No character selected, move your cursor over one and use /chid to select them." end
+            if not chid then return "No character selected. Place your cursor over a player character and use ^cyan;/chid^reset; to select the character." end
             chid = chid.UUID
             --add the nickname
             --[[
@@ -983,7 +888,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             player.setProperty("xDPC::recognizedPlayers", recoged)
             root.setConfiguration("xDPC::cursorChar", nil)
 
-            return "Character assigned nickname " .. newNick .. ", selection released."
+            return "Character assigned nickname '" .. newNick .. "'; ^cyan;/chid^reset; selection released."
         end, data)
         if status then
             return resultOrError
@@ -995,14 +900,14 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
     starcustomchat.utils.setMessageHandler("/clearnick", function(_, _, data)
         local status, resultOrError = pcall(function(data)
             local chid = root.getConfiguration("xDPC::cursorChar") or nil
-            if not chid then return "No character selected, move your cursor over one and use /chid to select them." end
+            if not chid then return "No character selected. Place your cursor over a player character and use ^cyan;/chid^reset; to select the character." end
             chid = chid.UUID
             local recoged = player.getProperty("xDPC::recognizedPlayers") or {}
             if recoged[chid] then
                 recoged[chid] = nil
                 player.setProperty("xDPC::recognizedPlayers", recoged)
                 root.setConfiguration("xDPC::cursorChar", nil)
-                return "Reset nickname for character, selection released."
+                return "Reset nickname for character; ^cyan;/chid^reset; selection released."
             else
                 return "No nickname for this character exists."
             end
@@ -1113,7 +1018,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             local aliasPrio = tostring(math.tointeger(splitStr(data, " ")[1]) or "0")
             local chid = root.getConfiguration("xDPC::cursorChar") or nil
             if not chid then
-                return "No character selected, move your cursor over one and use /chid to make the selection."
+                return "No character selected. Place your cursor over a player character and use ^cyan;/chid^reset; to select the character."
             end
             local playerAliases = player.getProperty("xDPC::aliases") or {}
             local aliasInfo = {}
@@ -1137,7 +1042,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
 
             -- FezzedOne: Use this instead!
             world.sendEntityMessage(chid.entityId, "showRecog", aliasInfo)
-            return "The selected character should now recognise you (if running xDPC)."
+            return "The selected character should now recognise you (if running xDPC); ^cyan;/chid^reset; selection released."
         end, data)
         if status then
             return resultOrError
@@ -1178,18 +1083,6 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             else
                 return "^red;Command unavailable on this client."
             end
-        end, data)
-        if status then
-            return resultOrError
-        else
-            sb.logError("Error occurred while running DPC command: %s", resultOrError)
-            return "^red;Error occurred while running command, check log"
-        end
-    end)
-    starcustomchat.utils.setMessageHandler("/ignoreversion", function(_, _, data)
-        local status, resultOrError = pcall(function(data)
-            root.setConfiguration("xDPC::ignoreVersion", true)
-            return "Ignoring version notices until you reconnect."
         end, data)
         if status then
             return resultOrError
@@ -2983,7 +2876,7 @@ function xDPC:formatIncomingMessage(rawMessage)
             local recoged = {}
             if xsb then
                 if isLocalPlayer(message.receiverId or player.id()) then
-                    recoged = world.sendEntityMessage(message.receiverId or player.id(), "dpcGetRecogs"):result() or {}
+                    recoged = world.sendEntityMessage(message.receiverId or player.id(), "xdpcGetRecogs"):result() or {}
                 end
             else
                 recoged = player.getProperty("xDPC::recognizedPlayers") or {}
@@ -3025,7 +2918,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                     }
                     recoged[message.playerUid] = charRecInfo
                     if xsb then
-                        world.sendEntityMessage(message.receiverId or player.id(), "dpcSetRecogs", recoged)
+                        world.sendEntityMessage(message.receiverId or player.id(), "xdpcSetRecogs", recoged)
                     else
                         player.setProperty("xDPC::recognizedPlayers", recoged)
                     end
