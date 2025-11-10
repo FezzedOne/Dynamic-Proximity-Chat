@@ -578,7 +578,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
     end)
     starcustomchat.utils.setMessageHandler("/commcodes", function(_, _, data)
         local status, resultOrError = pcall(function(data)
-            local playerCommCodes = world.sendEntityMessage(player.id(), "getCommCodes"):result() or { ["0"] = false }
+            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result() or { ["0"] = false }
 
             local returnString = "Listening on comm codes:"
             local numCodes = 0
@@ -613,10 +613,10 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             else
                 splitArgs = splitStr(data, " ")
             end
-            local playerCommCodes = world.sendEntityMessage(player.id(), "getCommCodes"):result() or { ["0"] = false }
+            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result() or { ["0"] = false }
             local newDefault = splitArgs[1] and tostring(splitArgs[1]) or nil
             if newDefault == "" or not newDefault then
-                local currentDefault = world.sendEntityMessage(player.id(), "getDefaultCommCode"):result()
+                local currentDefault = world.sendEntityMessage(player.id(), "xDPC::getDefaultCommCod"):result()
                 local alias = playerCommCodes[currentDefault]
                 if currentDefault == false then currentDefault = "-" end
                 if alias then
@@ -626,7 +626,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                 end
             end
             if tonumber(newDefault) and playerCommCodes[newDefault] ~= nil then
-                world.sendEntityMessage(player.id(), "setDefaultCommCode", newDefault)
+                world.sendEntityMessage(player.id(), "xDPC::setDefaultCommCode", newDefault)
                 local alias = playerCommCodes[newDefault]
                 return "Set default comm code to ["
                     .. newDefault
@@ -634,7 +634,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                     .. (alias and (" (alias [" .. tostring(alias) .. "])") or " (no alias)")
             elseif not tonumber(newDefault) then
                 if newDefault == "-" then
-                    world.sendEntityMessage(player.id(), "setDefaultCommCode", false)
+                    world.sendEntityMessage(player.id(), "xDPC::setDefaultCommCode", false)
                     return "Set default comm code to [-]"
                 else
                     local foundCode = nil
@@ -645,7 +645,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                         end
                     end
                     if foundCode then
-                        world.sendEntityMessage(player.id(), "setDefaultCommCode", foundCode)
+                        world.sendEntityMessage(player.id(), "xDPC::setDefaultCommCode", foundCode)
                         return "Set default comm code to [" .. foundCode .. "] (alias [" .. newDefault .. "])"
                     else
                         return "Could not find comm code alias '" .. newDefault .. "'; default not changed"
@@ -674,7 +674,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             else
                 splitArgs = splitStr(data, " ")
             end
-            local playerCommCodes = world.sendEntityMessage(player.id(), "getCommCodes"):result() or { ["0"] = false }
+            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result() or { ["0"] = false }
             local newCommCode, newAlias =
                 (splitArgs[1] and tostring(splitArgs[1]) or nil), (splitArgs[2] and tostring(splitArgs[2]) or nil)
             if tonumber(newAlias) then newAlias = nil end
@@ -682,7 +682,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             if not tonumber(newCommCode) then return "Invalid comm code specified; must be a number" end
             local codeExists = playerCommCodes[newCommCode] ~= nil
             playerCommCodes[newCommCode] = newAlias or false
-            world.sendEntityMessage(player.id(), "setCommCodes", playerCommCodes)
+            world.sendEntityMessage(player.id(), "xDPC::setCommCodes", playerCommCodes)
 
             return (codeExists and "Modified" or "Added")
                 .. " comm code ["
@@ -705,8 +705,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             else
                 splitArgs = splitStr(data, " ")
             end
-            local playerCommCodes = world.sendEntityMessage(player.id(), "getCommCodes"):result() or { ["0"] = false }
-            local defaultCommCode = world.sendEntityMessage(player.id(), "getDefaultCommCode"):result()
+            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result() or { ["0"] = false }
+            local defaultCommCode = world.sendEntityMessage(player.id(), "xDPC::getDefaultCommCod"):result()
             if defaultCommCode == nil then defaultCommCode = "0" end
             local commCodeOrAlias = (splitArgs[1] and tostring(splitArgs[1]) or nil)
             if commCodeOrAlias == "" or not commCodeOrAlias then
@@ -715,7 +715,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             if tonumber(commCodeOrAlias) and playerCommCodes[commCodeOrAlias] ~= nil then
                 local alias = playerCommCodes[commCodeOrAlias]
                 playerCommCodes[commCodeOrAlias] = nil
-                world.sendEntityMessage(player.id(), "setCommCodes", playerCommCodes)
+                world.sendEntityMessage(player.id(), "xDPC::setCommCodes", playerCommCodes)
                 if defaultCommCode == commCodeOrAlias then
                     local newDefault = false
                     -- FezzedOne: Check if the player has any other comm codes to default to. If not, disable comms.
@@ -727,7 +727,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                     else
                         newDefault = "0"
                     end
-                    world.sendEntityMessage(player.id(), "setDefaultCommCode", newDefault)
+                    world.sendEntityMessage(player.id(), "xDPC::setDefaultCommCode", newDefault)
                 end
                 return "Removed comm code ["
                     .. commCodeOrAlias
@@ -743,7 +743,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                 end
                 if not foundCode then return "Did not find alias to remove" end
                 playerCommCodes[foundCode] = nil
-                world.sendEntityMessage(player.id(), "setCommCodes", playerCommCodes)
+                world.sendEntityMessage(player.id(), "xDPC::setCommCodes", playerCommCodes)
                 removeToServer(playerCommCodes)
                 return "Removed comm code [" .. foundCode .. "] (alias [" .. commCodeOrAlias .. "])"
             else
@@ -1033,7 +1033,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
 
             -- FezzedOne: This is ASYNCHRONOUS on players owned by other clients and will thus always jump to the `else` for them, showing the failure even if it succeeds.
             --[[
-            if world.sendEntityMessage(chid.entityId, "showRecog", aliasInfo):result() then
+            if world.sendEntityMessage(chid.entityId, "xDPC::showRecog", aliasInfo):result() then
                 return chid.name .. " now recognizes you."
             else
                 return "Recognition failed (this is bad it shouldn't happen)."
@@ -1041,7 +1041,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             ]]
 
             -- FezzedOne: Use this instead!
-            world.sendEntityMessage(chid.entityId, "showRecog", aliasInfo)
+            world.sendEntityMessage(chid.entityId, "xDPC::showRecog", aliasInfo)
             return "The selected character should now recognise you (if running xDPC); ^cyan;/chid^reset; selection released."
         end, data)
         if status then
@@ -1305,7 +1305,7 @@ function xDPC:onSendMessage(data)
                                 rawText = rawText:gsub("%[%]", "[" .. defaultKey .. "]")
                             else
                                 local rawCode = rawText:sub(iCount + 1, langEnd - 1)
-                                local playerCommCodes = world.sendEntityMessage(player.id(), "getCommCodes"):result()
+                                local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result()
                                     or { ["0"] = false }
                                 if tonumber(rawCode) then
                                     local rawCommKey = tostring(tonumber(rawCode) or "0")
@@ -1350,7 +1350,7 @@ function xDPC:onSendMessage(data)
                 end
                 local commKey = ""
                 if rawText:find("{.*}") then
-                    local defaultCommCode = world.sendEntityMessage(player.id(), "getDefaultCommCode"):result()
+                    local defaultCommCode = world.sendEntityMessage(player.id(), "xDPC::getDefaultCommCod"):result()
                     if defaultCommCode == nil then
                         defaultCommCode = "0"
                     elseif defaultCommCode == false then
@@ -1631,7 +1631,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                     if xsb and not message.isSccrp then -- FezzedOne: Already handled in SCCRP with my PR.
                         if copiedMessage or message.targetId then -- FezzedOne: Show the receiver's name for disambiguation on xClient.
                             if world.entityExists(receiverEntityId) then
-                                local receiverName = world.sendEntityMessage(receiverEntityId, "receiverName"):result()
+                                local receiverName = world.sendEntityMessage(receiverEntityId, "xDPC::receiverName"):result()
                                     or "<n/a>"
                                 if #ownPlayers ~= 1 then
                                     message.receiverName = receiverName
@@ -1658,7 +1658,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                         message.inEarShot = false
 
                         -- FezzedOne: Get the player's comm codes for later.
-                        local playerCommCodes = world.sendEntityMessage(receiverEntityId, "getCommCodes"):result()
+                        local playerCommCodes = world.sendEntityMessage(receiverEntityId, "xDPC::getCommCodes"):result()
                             or { ["0"] = false }
 
                         -- FezzedOne: Dynamic collision thickness calculation.
@@ -2572,7 +2572,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                                                 local newLang
                                                 if xsb and receiverIsLocal then
                                                     newLang = world
-                                                        .sendEntityMessage(receiverEntityId, "hasLangKey", langKey)
+                                                        .sendEntityMessage(receiverEntityId, "xDPC::hasLangKey", langKey)
                                                         :result() or nil
                                                 else
                                                     newLang = player.getItemWithParameter("langKey", langKey) or nil
@@ -2582,7 +2582,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                                                     local hasItem
                                                     if xsb and receiverIsLocal then
                                                         hasItem = world
-                                                            .sendEntityMessage(receiverEntityId, "langKeyCount", newLang)
+                                                            .sendEntityMessage(receiverEntityId, "xDPC::langKeyCount", newLang)
                                                             :result()
                                                     else
                                                         hasItem = player.hasCountOfItem(newLang, true)
@@ -2876,7 +2876,7 @@ function xDPC:formatIncomingMessage(rawMessage)
             local recoged = {}
             if xsb then
                 if isLocalPlayer(message.receiverId or player.id()) then
-                    recoged = world.sendEntityMessage(message.receiverId or player.id(), "xdpcGetRecogs"):result() or {}
+                    recoged = world.sendEntityMessage(message.receiverId or player.id(), "xDPC::getRecogs"):result() or {}
                 end
             else
                 recoged = player.getProperty("xDPC::recognizedPlayers") or {}
@@ -2918,7 +2918,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                     }
                     recoged[message.playerUid] = charRecInfo
                     if xsb then
-                        world.sendEntityMessage(message.receiverId or player.id(), "xdpcSetRecogs", recoged)
+                        world.sendEntityMessage(message.receiverId or player.id(), "xDPC::setRecogs", recoged)
                     else
                         player.setProperty("xDPC::recognizedPlayers", recoged)
                     end
