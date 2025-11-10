@@ -2867,6 +2867,8 @@ function xDPC:formatIncomingMessage(rawMessage)
             --     end
             -- end
             message.nickname = useName
+        elseif message.isDpc and not message.playerUid then
+            -- Don't modify the server nickname.
         elseif
             message.isDpc
             and message.playerUid ~= (message.receiverUid or player.uniqueId())
