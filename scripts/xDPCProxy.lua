@@ -16,10 +16,10 @@ function init()
         if isLocal then return player.hasCountOfItem(langKeyItem, true) end
     end)
     message.setHandler("getCommCodes", function(_, isLocal)
-        if isLocal then return player.getProperty("DynProxChat::commCodes") or { ["0"] = false } end
+        if isLocal then return player.getProperty("xDPC::commCodes") or { ["0"] = false } end
     end)
     message.setHandler("setCommCodes", function(_, isLocal, newCommCodes)
-        if isLocal then return player.setProperty("DynProxChat::commCodes", newCommCodes or { ["0"] = false }) end
+        if isLocal then return player.setProperty("xDPC::commCodes", newCommCodes or { ["0"] = false }) end
     end)
     message.setHandler("dpcServerMessage", function(_, _, status)
         if status then chat.addMessage(status) end
@@ -31,7 +31,7 @@ function init()
             local langLevel = data.langLevel
             local message = data.message
 
-            local learnedLangs = player.getProperty("DPC::learnedLangs") or {}
+            local learnedLangs = player.getProperty("xDPC::learnedLangs") or {}
             learnedLangs[langKey] = {
                 name = langName,
                 prof = langLevel,
@@ -43,7 +43,7 @@ function init()
     end)
     message.setHandler("getDefaultCommCode", function(_, isLocal, newDefault)
         if isLocal then
-            local default = player.getProperty("DynProxChat::defaultCommCode")
+            local default = player.getProperty("xDPC::defaultCommCode")
             if default ~= nil then
                 return default
             else
@@ -54,7 +54,7 @@ function init()
     message.setHandler("setDefaultCommCode", function(_, isLocal, newDefault)
         if isLocal then
             if newDefault == nil then newDefault = "0" end
-            return player.setProperty("DynProxChat::defaultCommCode", newDefault)
+            return player.setProperty("xDPC::defaultCommCode", newDefault)
         end
     end)
     message.setHandler("showRecog", function(_, _, aliasInfo)
@@ -65,7 +65,7 @@ function init()
                     ["UUID"] = player.uniqueId()
                 }
         ]]
-        local recoged = player.getProperty("DPC::recognizedPlayers") or {}
+        local recoged = player.getProperty("xDPC::recognizedPlayers") or {}
         local playerUid = aliasInfo.UUID or nil
         if not playerUid then return false end
         local playerRecog = recoged[playerUid] or nil
@@ -78,7 +78,7 @@ function init()
                 ["aliasPrio"] = aliasInfo.priority,
             }
             recoged[playerUid] = playerRecog
-            player.setProperty("DPC::recognizedPlayers", recoged)
+            player.setProperty("xDPC::recognizedPlayers", recoged)
             return true
         end
     end)
@@ -90,11 +90,11 @@ function init()
     end)
 
     message.setHandler("dpcGetRecogs", function(_, isLocal)
-        if isLocal then return player.getProperty("DPC::recognizedPlayers") or {} end
+        if isLocal then return player.getProperty("xDPC::recognizedPlayers") or {} end
     end)
 
     message.setHandler("dpcSetRecogs", function(_, isLocal, newRecogs)
-        if isLocal then player.setProperty("DPC::recognizedPlayers", newRecogs) end
+        if isLocal then player.setProperty("xDPC::recognizedPlayers", newRecogs) end
     end)
 
     local currentName, defaultName = getNames()

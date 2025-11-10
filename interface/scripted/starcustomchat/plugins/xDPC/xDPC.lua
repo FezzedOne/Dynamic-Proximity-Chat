@@ -133,8 +133,8 @@ function xDPC:init()
     local currentName, _ = getNames()
     -- FezzedOne: Check to ensure this callback EXISTS first, Captain Salt!
     if player.setNametag then player.setNametag(currentName or "") end
-    root.setConfiguration("DPC::cursorChar", nil)
-    root.setConfiguration("DPC::ignoreVersion", nil)
+    root.setConfiguration("xDPC::cursorChar", nil)
+    root.setConfiguration("xDPC::ignoreVersion", nil)
 
     self.unchecked = true
 end
@@ -414,15 +414,15 @@ local function setTextHint(mode, override)
         widget.setText("lblTextboxHint", starcustomchat.utils.getTranslation("chat.textbox.hint"))
         return
     end
-    if root.getConfiguration("DPC::hideHints") then return end
+    if root.getConfiguration("xDPC::hideHints") then return end
 
     local defaultLang = getDefaultLang()
 
     local hintStr = ""
     if defaultLang ~= "!!" then hintStr = hintStr .. "Default Lang: [" .. defaultLang .. "], " end
     local autoCorVal = (
-        root.getConfiguration("DPC::typos")
-        and root.getConfiguration("DPC::typos")["typosActive"]
+        root.getConfiguration("xDPC::typos")
+        and root.getConfiguration("xDPC::typos")["typosActive"]
         and "on"
     ) or "off"
     hintStr = hintStr .. "Autocorrect " .. autoCorVal
@@ -433,11 +433,11 @@ local function setTextHint(mode, override)
 end
 
 local function checktypo(toggle)
-    local typoTable = root.getConfiguration("DPC::typos") or {}
+    local typoTable = root.getConfiguration("xDPC::typos") or {}
 
     if toggle then typoTable["typosActive"] = not typoTable["typosActive"] end
 
-    root.setConfiguration("DPC::typos", typoTable)
+    root.setConfiguration("xDPC::typos", typoTable)
     setTextHint("xDPC::Prox")
     local typoStatus = (typoTable["typosActive"] and "on") or "off"
     return "Typo correction is " .. typoStatus
@@ -515,7 +515,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
         end
     end)
     starcustomchat.utils.setMessageHandler("/showtypos", function(_, _, data)
-        local typoTable = root.getConfiguration("DPC::typos") or {}
+        local typoTable = root.getConfiguration("xDPC::typos") or {}
         if typoTable == nil then return "You have no corrections or typos saved. Use /addtypo to make one." end
 
         local rtStr = "Typos and corrections:^#2ee;"
@@ -543,10 +543,10 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
         local typo, correction = splitArgs[1], splitArgs[2]
 
         if typo == nil or correction == nil then return "Missing arguments for /addtypo, need {typo, correction}" end
-        local typoTable = root.getConfiguration("DPC::typos") or {}
+        local typoTable = root.getConfiguration("xDPC::typos") or {}
 
         typoTable[typo] = correction
-        root.setConfiguration("DPC::typos", typoTable)
+        root.setConfiguration("xDPC::typos", typoTable)
         return 'Typo "' .. typo .. '" added as "' .. correction .. '".'
     end)
     starcustomchat.utils.setMessageHandler("/removetypo", function(_, _, data)
@@ -559,7 +559,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
 
         if typoTable then
             typoTable[typo] = nil
-            root.setConfiguration("DPC::typos", typoTable)
+            root.setConfiguration("xDPC::typos", typoTable)
             return 'Typo "' .. typo .. '" removed.'
         else
             return "No typos found."
@@ -625,9 +625,9 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
         return "Language " .. langName .. " added, use [" .. langKey .. "] to use it."
     end)
     starcustomchat.utils.setMessageHandler("/togglehints", function(_, _, data)
-        local newHintsVal = not root.getConfiguration("DPC::hideHints")
+        local newHintsVal = not root.getConfiguration("xDPC::hideHints")
         local hintsDisplay = (newHintsVal and "off") or "on"
-        root.setConfiguration("DPC::hideHints", newHintsVal)
+        root.setConfiguration("xDPC::hideHints", newHintsVal)
         setTextHint("xDPC::Prox", not newHintsVal)
         return "Hint display " .. hintsDisplay
     end)
@@ -814,8 +814,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
     end)
     starcustomchat.utils.setMessageHandler("/chatbubble", function(_, _, data)
         local status, resultOrError = pcall(function(data)
-            local bubbleSetting = not (root.getConfiguration("DPC::chatBubble") or false)
-            root.setConfiguration("DPC::chatBubble", bubbleSetting)
+            local bubbleSetting = not (root.getConfiguration("xDPC::chatBubble") or false)
+            root.setConfiguration("xDPC::chatBubble", bubbleSetting)
 
             local retStr = "not "
             if bubbleSetting then retStr = "" end
@@ -831,8 +831,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
     end)
     starcustomchat.utils.setMessageHandler("/skiprecog", function(_, _, data)
         local status, resultOrError = pcall(function(data)
-            local skipStatus = not (player.getProperty("DPC::skipRecog") or false)
-            player.setProperty("DPC::skipRecog", skipStatus)
+            local skipStatus = not (player.getProperty("xDPC::skipRecog") or false)
+            player.setProperty("xDPC::skipRecog", skipStatus)
 
             local retStr = "not "
             if skipStatus then retStr = "" end
@@ -853,8 +853,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                 return 'Are you sure you want to reset recognized characters? Repeat this command with "reset" as the argument to confirm.'
             end
 
-            player.setProperty("DPC::recognizedPlayers", nil)
-            player.setProperty("DPC::recogGroup", nil)
+            player.setProperty("xDPC::recognizedPlayers", nil)
+            player.setProperty("xDPC::recogGroup", nil)
             return "Your recognized characters and groups have been reset."
         end, data)
         if status then
@@ -873,15 +873,15 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                 splitArgs = splitStr(data, " ")
             end
             local group = splitArgs[1] or nil
-            local curGroup = player.getProperty("DPC::recogGroup") or "none"
+            local curGroup = player.getProperty("xDPC::recogGroup") or "none"
 
             if not group or #group < 1 then
                 return "Your current recognition group is " .. curGroup
             elseif group == "none" or group == "reset" then
-                player.setProperty("DPC::recogGroup", nil)
+                player.setProperty("xDPC::recogGroup", nil)
                 return "Your recognition group was reset."
             end
-            player.setProperty("DPC::recogGroup", group)
+            player.setProperty("xDPC::recogGroup", group)
             return "Your recognition group was changed from " .. curGroup .. " to " .. group .. "."
         end, data)
         if status then
@@ -907,8 +907,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
 
             if font == "reset" or font == "exo" then
                 --apply player property to tell people what font is used for general/quotes
-                player.setProperty("DPC::" .. type .. "Font", nil)
-                player.setProperty("DPC::" .. type .. "Weight", nil)
+                player.setProperty("xDPC::" .. type .. "Font", nil)
+                player.setProperty("xDPC::" .. type .. "Weight", nil)
                 return "Reset " .. type .. " font."
             end
 
@@ -916,9 +916,9 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
 
             if self.fontLib and self.fontLib[font] then
                 --apply player property to tell people what font is used for general/quotes
-                player.setProperty("DPC::" .. type .. "Font", self.fontLib[font]["font"])
+                player.setProperty("xDPC::" .. type .. "Font", self.fontLib[font]["font"])
                 if self.fontLib[font]["weight"] then
-                    player.setProperty("DPC::" .. type .. "Weight", self.fontLib[font]["weight"])
+                    player.setProperty("xDPC::" .. type .. "Weight", self.fontLib[font]["weight"])
                 end
                 return "Set " .. type .. " font to: ^font=" .. self.fontLib[font]["font"] .. ";" .. font .. "^reset;"
             end
@@ -944,7 +944,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                 ["entityId"] = cursorPlayer,
                 ["UUID"] = world.entityUniqueId(cursorPlayer),
             }
-            root.setConfiguration("DPC::cursorChar", chidTable)
+            root.setConfiguration("xDPC::cursorChar", chidTable)
             return "Character selected."
         end, data)
         if status then
@@ -961,7 +961,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             local newNick = splitArgs[1] or nil
             if not newNick or #tostring(newNick) < 1 then return "No nickname provided, try again." end
 
-            local chid = root.getConfiguration("DPC::cursorChar") or nil
+            local chid = root.getConfiguration("xDPC::cursorChar") or nil
             if not chid then return "No character selected, move your cursor over one and use /chid to select them." end
             chid = chid.UUID
             --add the nickname
@@ -974,14 +974,14 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             },
             }
         ]]
-            local recoged = player.getProperty("DPC::recognizedPlayers") or {}
+            local recoged = player.getProperty("xDPC::recognizedPlayers") or {}
             recoged[chid] = {
                 ["savedName"] = tostring(newNick),
                 ["manName"] = true,
                 ["aliasPrio"] = -10,
             }
-            player.setProperty("DPC::recognizedPlayers", recoged)
-            root.setConfiguration("DPC::cursorChar", nil)
+            player.setProperty("xDPC::recognizedPlayers", recoged)
+            root.setConfiguration("xDPC::cursorChar", nil)
 
             return "Character assigned nickname " .. newNick .. ", selection released."
         end, data)
@@ -994,14 +994,14 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
     end)
     starcustomchat.utils.setMessageHandler("/clearnick", function(_, _, data)
         local status, resultOrError = pcall(function(data)
-            local chid = root.getConfiguration("DPC::cursorChar") or nil
+            local chid = root.getConfiguration("xDPC::cursorChar") or nil
             if not chid then return "No character selected, move your cursor over one and use /chid to select them." end
             chid = chid.UUID
-            local recoged = player.getProperty("DPC::recognizedPlayers") or {}
+            local recoged = player.getProperty("xDPC::recognizedPlayers") or {}
             if recoged[chid] then
                 recoged[chid] = nil
-                player.setProperty("DPC::recognizedPlayers", recoged)
-                root.setConfiguration("DPC::cursorChar", nil)
+                player.setProperty("xDPC::recognizedPlayers", recoged)
+                root.setConfiguration("xDPC::cursorChar", nil)
                 return "Reset nickname for character, selection released."
             else
                 return "No nickname for this character exists."
@@ -1036,10 +1036,10 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
                 return "Cannot assign a priority 0 alias (this is reserved for your character's name)."
             end
             if aliasPrio == "?" then
-                player.setProperty("DPC::unknownAlias", alias)
+                player.setProperty("xDPC::unknownAlias", alias)
                 return "Unknown alias set as: " .. alias
             end
-            local playerAliases = player.getProperty("DPC::aliases") or {}
+            local playerAliases = player.getProperty("xDPC::aliases") or {}
 
             if not tonumber(aliasPrio) then return "Invalid priority, use a number or '?' for assignment." end
 
@@ -1048,7 +1048,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             playerAliases[aliasPrio] = tostring(alias)
             local _, defaultName = getNames()
             playerAliases["0"] = xsb and defaultName or world.entityName(player.id())
-            player.setProperty("DPC::aliases", playerAliases)
+            player.setProperty("xDPC::aliases", playerAliases)
             return "Alias " .. alias .. " added with priority " .. aliasPrio
         end, data)
         if status then
@@ -1062,8 +1062,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
         local status, resultOrError = pcall(function(data)
             local resetConf = splitStr(data, " ")[1]
             if resetConf == "reset" then
-                player.setProperty("DPC::aliases", nil)
-                player.setProperty("DPC::unknownAlias", nil)
+                player.setProperty("xDPC::aliases", nil)
+                player.setProperty("xDPC::unknownAlias", nil)
                 return "Aliases reset."
             else
                 return 'Missing confirmation, use "reset" to confirm the reset.'
@@ -1080,7 +1080,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
         local status, resultOrError = pcall(function(data)
             --print out all of the aliases
             local retStr = ""
-            local playerAliases = player.getProperty("DPC::aliases") or nil
+            local playerAliases = player.getProperty("xDPC::aliases") or nil
             if not playerAliases then return "No aliases exist, use /addalias to make some." end
 
             for prioNum = -10, 10, 1 do
@@ -1096,7 +1096,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             end
 
             retStr = trim(retStr)
-            local unknownAlias = player.getProperty("DPC::unknownAlias") or "^#999;???^reset;"
+            local unknownAlias = player.getProperty("xDPC::unknownAlias") or "^#999;???^reset;"
             return "Aliases are: " .. retStr .. ". Unknown alias is: " .. unknownAlias
         end, data)
         if status then
@@ -1111,11 +1111,11 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
         local status, resultOrError = pcall(function(data)
             -- FezzedOne: Backported bugfix for the alias type check from Captain Salt's repo.
             local aliasPrio = tostring(math.tointeger(splitStr(data, " ")[1]) or "0")
-            local chid = root.getConfiguration("DPC::cursorChar") or nil
+            local chid = root.getConfiguration("xDPC::cursorChar") or nil
             if not chid then
                 return "No character selected, move your cursor over one and use /chid to make the selection."
             end
-            local playerAliases = player.getProperty("DPC::aliases") or {}
+            local playerAliases = player.getProperty("xDPC::aliases") or {}
             local aliasInfo = {}
 
             if playerAliases and tonumber(aliasPrio) and playerAliases[aliasPrio] then
@@ -1188,7 +1188,7 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
     end)
     starcustomchat.utils.setMessageHandler("/ignoreversion", function(_, _, data)
         local status, resultOrError = pcall(function(data)
-            root.setConfiguration("DPC::ignoreVersion", true)
+            root.setConfiguration("xDPC::ignoreVersion", true)
             return "Ignoring version notices until you reconnect."
         end, data)
         if status then
@@ -1358,7 +1358,7 @@ function xDPC:onSendMessage(data)
                 local hasNoise = false
                 local defaultKey = getDefaultLang()
                 data.defaultLang = defaultKey
-                local typoTable = root.getConfiguration("DPC::typos") or {}
+                local typoTable = root.getConfiguration("xDPC::typos") or {}
                 local typoVar = typoTable["typosActive"]
                 if typoVar then
                     local newText = ""
@@ -1502,8 +1502,8 @@ function xDPC:onSendMessage(data)
                     .. TagSuffix
 
                 --check for alias stuff here
-                local playerAliases = player.getProperty("DPC::aliases") or {}
-                data.fakeName = player.getProperty("DPC::unknownAlias") or nil
+                local playerAliases = player.getProperty("xDPC::aliases") or {}
+                data.fakeName = player.getProperty("xDPC::unknownAlias") or nil
 
                 local recogName = nil
                 local recogPrio = 100
@@ -1608,7 +1608,7 @@ function xDPC:onSendMessage(data)
         }
 
         promises:add(sendMessagePromise)
-        if root.getConfiguration("DPC::chatBubble") or false then player.say("...") end
+        if root.getConfiguration("xDPC::chatBubble") or false then player.say("...") end
         if data.text:find('"') then player.emote("Blabbering") end
     end
 end
@@ -2963,7 +2963,7 @@ function xDPC:formatIncomingMessage(rawMessage)
             --allow higher (negative) priority aliases to appear on the message
             --take from player config instead of the message
             --in the future, allow players to use the nickname feature on themselves. right now i dont see why it'd be useful to do but whatever
-            -- local aliases = player.getProperty("DPC::aliases") or {}
+            -- local aliases = player.getProperty("xDPC::aliases") or {}
             local _, defaultName = getNames()
             local useName = xsb and (defaultName or "") or world.entityName(player.id())
             -- local minPrio = 0
@@ -2978,7 +2978,7 @@ function xDPC:formatIncomingMessage(rawMessage)
             message.isDpc
             and message.playerUid ~= (message.receiverUid or player.uniqueId())
             and not message.skipRecog
-            and (not message.recogGroup or message.recogGroup ~= player.getProperty("DPC::recogGroup"))
+            and (not message.recogGroup or message.recogGroup ~= player.getProperty("xDPC::recogGroup"))
         then
             local recoged = {}
             if xsb then
@@ -2986,7 +2986,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                     recoged = world.sendEntityMessage(message.receiverId or player.id(), "dpcGetRecogs"):result() or {}
                 end
             else
-                recoged = player.getProperty("DPC::recognizedPlayers") or {}
+                recoged = player.getProperty("xDPC::recognizedPlayers") or {}
             end
 
             --sending player will check for aliases or a name (and priority) in the message and attach a param if it exists
@@ -3027,7 +3027,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                     if xsb then
                         world.sendEntityMessage(message.receiverId or player.id(), "dpcSetRecogs", recoged)
                     else
-                        player.setProperty("DPC::recognizedPlayers", recoged)
+                        player.setProperty("xDPC::recognizedPlayers", recoged)
                     end
                 end
             end
@@ -3082,7 +3082,7 @@ function xDPC:onReceiveMessage(message) --here for logging the message you recei
 end
 
 function xDPC:onModeChange(mode)
-    if mode == "xDPC::Prox" and not (player.getProperty("DPC::firstLoad") or false) then
+    if mode == "xDPC::Prox" and not (player.getProperty("xDPC::firstLoad") or false) then
         -- chat.addMessage("^CornFlowerBlue;xDPC^reset;: <first start message>")
         player.setProperty("xDPC::firstLoad", true)
     end
