@@ -578,7 +578,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
     end)
     starcustomchat.utils.setMessageHandler("/commcodes", function(_, _, data)
         local status, resultOrError = pcall(function(data)
-            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result() or { ["0"] = false }
+            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result()
+                or { ["0"] = false }
 
             local returnString = "Listening on comm codes:"
             local numCodes = 0
@@ -613,7 +614,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             else
                 splitArgs = splitStr(data, " ")
             end
-            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result() or { ["0"] = false }
+            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result()
+                or { ["0"] = false }
             local newDefault = splitArgs[1] and tostring(splitArgs[1]) or nil
             if newDefault == "" or not newDefault then
                 local currentDefault = world.sendEntityMessage(player.id(), "xDPC::getDefaultCommCod"):result()
@@ -674,7 +676,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             else
                 splitArgs = splitStr(data, " ")
             end
-            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result() or { ["0"] = false }
+            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result()
+                or { ["0"] = false }
             local newCommCode, newAlias =
                 (splitArgs[1] and tostring(splitArgs[1]) or nil), (splitArgs[2] and tostring(splitArgs[2]) or nil)
             if tonumber(newAlias) then newAlias = nil end
@@ -705,7 +708,8 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             else
                 splitArgs = splitStr(data, " ")
             end
-            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result() or { ["0"] = false }
+            local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result()
+                or { ["0"] = false }
             local defaultCommCode = world.sendEntityMessage(player.id(), "xDPC::getDefaultCommCod"):result()
             if defaultCommCode == nil then defaultCommCode = "0" end
             local commCodeOrAlias = (splitArgs[1] and tostring(splitArgs[1]) or nil)
@@ -867,7 +871,9 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
             if not newNick or #tostring(newNick) < 1 then return "No nickname provided, try again." end
 
             local chid = root.getConfiguration("xDPC::cursorChar") or nil
-            if not chid then return "No character selected. Place your cursor over a player character and use ^cyan;/chid^reset; to select the character." end
+            if not chid then
+                return "No character selected. Place your cursor over a player character and use ^cyan;/chid^reset; to select the character."
+            end
             chid = chid.UUID
             --add the nickname
             --[[
@@ -900,7 +906,9 @@ function xDPC:registerMessageHandlers(shared) --look at this function in irden c
     starcustomchat.utils.setMessageHandler("/clearnick", function(_, _, data)
         local status, resultOrError = pcall(function(data)
             local chid = root.getConfiguration("xDPC::cursorChar") or nil
-            if not chid then return "No character selected. Place your cursor over a player character and use ^cyan;/chid^reset; to select the character." end
+            if not chid then
+                return "No character selected. Place your cursor over a player character and use ^cyan;/chid^reset; to select the character."
+            end
             chid = chid.UUID
             local recoged = player.getProperty("xDPC::recognizedPlayers") or {}
             if recoged[chid] then
@@ -1305,8 +1313,9 @@ function xDPC:onSendMessage(data)
                                 rawText = rawText:gsub("%[%]", "[" .. defaultKey .. "]")
                             else
                                 local rawCode = rawText:sub(iCount + 1, langEnd - 1)
-                                local playerCommCodes = world.sendEntityMessage(player.id(), "xDPC::getCommCodes"):result()
-                                    or { ["0"] = false }
+                                local playerCommCodes = world
+                                    .sendEntityMessage(player.id(), "xDPC::getCommCodes")
+                                    :result() or { ["0"] = false }
                                 if tonumber(rawCode) then
                                     local rawCommKey = tostring(tonumber(rawCode) or "0")
                                     legalCommKey = playerCommCodes[rawCommKey] ~= nil
@@ -1508,6 +1517,12 @@ end
 
 function xDPC:formatIncomingMessage(rawMessage)
     local messageFormatter = function(message)
+        if message.data then -- FezzedOne: Get xStarbound/OpenStarbound chat metadata if present.
+            for k, v in pairs(message.data) do
+                if message[k] == nil then message[k] = v end
+            end
+        end
+
         local hasPrefix = message.text:sub(1, #xDPCPrefix) == xDPCPrefix
 
         local isGlobalChat = message.mode == "Broadcast"
@@ -1518,9 +1533,7 @@ function xDPC:formatIncomingMessage(rawMessage)
         local showAsLocal = message.mode == "Local"
         -- Fezzedone: Whoops. Forgot to actually handle (or rather, not handle) SCCRP announcement messages.
         if message.text:sub(1, #AnnouncementPrefix) == AnnouncementPrefix then skipHandling = true end
-        if not root.getConfiguration("xDPC::handleSccrpProx") then
-            skipHandling = skipHandling or showAsProximity
-        end
+        if not root.getConfiguration("xDPC::handleSccrpProx") then skipHandling = skipHandling or showAsProximity end
 
         if
             self.serverDefault
@@ -1631,8 +1644,9 @@ function xDPC:formatIncomingMessage(rawMessage)
                     if xsb and not message.isSccrp then -- FezzedOne: Already handled in SCCRP with my PR.
                         if copiedMessage or message.targetId then -- FezzedOne: Show the receiver's name for disambiguation on xClient.
                             if world.entityExists(receiverEntityId) then
-                                local receiverName = world.sendEntityMessage(receiverEntityId, "xDPC::receiverName"):result()
-                                    or "<n/a>"
+                                local receiverName = world
+                                    .sendEntityMessage(receiverEntityId, "xDPC::receiverName")
+                                    :result() or "<n/a>"
                                 if #ownPlayers ~= 1 then
                                     message.receiverName = receiverName
                                     message.receiverUid = world.entityUniqueId(receiverEntityId)
@@ -2045,9 +2059,7 @@ function xDPC:formatIncomingMessage(rawMessage)
                                     local oocBump = 0
                                     local oocType
                                     local oocRad
-                                    if not root.getConfiguration("xDPC::proximityOoc") then
-                                        uncapRad = true
-                                    end
+                                    if not root.getConfiguration("xDPC::proximityOoc") then uncapRad = true end
                                     if rawSub(cInd + 2, cInd + 2) == "(" then
                                         --global ooc
                                         _, oocEnd = rawText:find("%)%)%)+", cInd) --the + catches extra parentheses in case someone adds more than 3
@@ -2878,7 +2890,8 @@ function xDPC:formatIncomingMessage(rawMessage)
             local recoged = {}
             if xsb then
                 if isLocalPlayer(message.receiverId or player.id()) then
-                    recoged = world.sendEntityMessage(message.receiverId or player.id(), "xDPC::getRecogs"):result() or {}
+                    recoged = world.sendEntityMessage(message.receiverId or player.id(), "xDPC::getRecogs"):result()
+                        or {}
                 end
             else
                 recoged = player.getProperty("xDPC::recognizedPlayers") or {}
@@ -2948,7 +2961,9 @@ function xDPC:formatIncomingMessage(rawMessage)
 
         if showAsProximity then message.mode = "Proximity" end
         if showAsLocal then message.mode = "Local" end
-        if (isGlobalChat or message.global) and message.mode ~= "xDPC::ProxSecondary" then message.mode = "Broadcast" end
+        if (isGlobalChat or message.global) and message.mode ~= "xDPC::ProxSecondary" then
+            message.mode = "Broadcast"
+        end
         -- setTextHint(message.mode)
         return message
     end
@@ -2971,7 +2986,10 @@ function xDPC:formatIncomingMessage(rawMessage)
 end
 
 function xDPC:onReceiveMessage(message) --here for logging the message you receive, just in case you wanted to save it or something
-    if message.connection ~= 0 and (message.sourceId or message.mode == "xDPC::Prox" or message.mode == "xDPC::ProxSecondary") then
+    if
+        message.connection ~= 0
+        and (message.sourceId or message.mode == "xDPC::Prox" or message.mode == "xDPC::ProxSecondary")
+    then
         sb.logInfo("Chat: <%s> %s", message.nickname:gsub("%^[^^;]-;", ""), message.text:gsub("%^[^^;]-;", ""))
     end
 end
