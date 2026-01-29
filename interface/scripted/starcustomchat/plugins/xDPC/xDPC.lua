@@ -1165,8 +1165,8 @@ local function quoteMap(str)
     local words = {}
     for word in quotes:gmatch("%S+") do
         -- Remove punctuation from each word
-        word = word:gsub("%p", "")
-        if #word > 0 then table.insert(words, word) end
+        local cleanedWord = word:gsub("%p", "")
+        if #cleanedWord > 0 then table.insert(words, cleanedWord) end
     end
 
     local tokens = {}
@@ -2224,10 +2224,10 @@ function xDPC:formatIncomingMessage(rawMessage)
                             local returnNum = 0
                             if not type(word) == "string" then return 0 end
                             for char in word:gmatch(".") do
-                                char = char:lower()
+                                local lowerChar = char:lower()
                                 returnNum = returnNum * 16
                                 if not math.tointeger(returnNum) then returnNum = math.tointeger(2 ^ 48) end
-                                returnNum = returnNum + math.abs(string.byte(char) - 100)
+                                returnNum = returnNum + math.abs(string.byte(lowerChar) - 100)
                             end
                             return returnNum
                         end
@@ -2283,17 +2283,18 @@ function xDPC:formatIncomingMessage(rawMessage)
                                 local vowelPattern = mergePattern(vowels)
                                 local compFail = randSource:randInt(0, 150)
                                     > (proficiency - (wordLength ^ 2 + 10) / (math.max(1, proficiency - 50) / 5))
+                                local newChar = char
                                 if proficiency < 5 or compFail then -- FezzedOne: Added a chance that a word will be partially comprehensible.
                                     if charLower:match(vowelPattern) then
                                         local randNum = randSource:randInt(1, #vowels)
-                                        char = vowels[randNum]
-                                    elseif not char:match("[%p]") then -- Don't mess with punctuation.
+                                        newChar = vowels[randNum]
+                                    elseif not newChar:match("[%p]") then -- Don't mess with punctuation.
                                         local randNum = randSource:randInt(1, #consonants)
-                                        char = consonants[randNum]
+                                        newChar = consonants[randNum]
                                     end
                                 end
-                                if not isLower then char = char:upper() end
-                                newWord = newWord .. char
+                                if not isLower then newChar = newChar:upper() end
+                                newWord = newWord .. newChar
                             end
                             return newWord
                         end
