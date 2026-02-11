@@ -1,6 +1,6 @@
 # xDPC
 
-> **Notice from @FezzedOne: This is a hard fork of @CptSalt's Dynamic Proximity Chat.** I've decided to make a hard fork of the @CptSalt's mod for reasons I will not go into here; DM me on Discord (**@fezzedone**) for more info. The readme has been revised to fix formatting issues and include commands added largely via my PRs. xDPC is _not_ fully network-compatible with Captain Salt's Dynamic Proximity Chat; in particular, nickname/alias recognition priorities are ranked oppositely between the mods.
+> **Notice from @FezzedOne: This is a hard fork of @CptSalt's Dynamic Proximity Chat.** I've decided to make a hard fork of the @CptSalt's mod for reasons I will not go into here; DM me on Stoat or Discord (**@fezzedone**) for more info. The readme has been revised to fix formatting issues and include commands added largely via my PRs. xDPC is _not_ fully network-compatible with Captain Salt's Dynamic Proximity Chat; in particular, nickname/alias recognition priorities are ranked oppositely between the mods.
 
 ## About
 
